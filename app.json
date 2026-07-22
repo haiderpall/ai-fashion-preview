@@ -1,10 +1,10 @@
 {
   "expo": {
     "name": "AI Fashion Preview ",
-    "slug": "AIFashionPreview_1.0",
+    "slug": "ai-fashion-preview",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/app-icon.jpeg",
+    "icon": "./assets/images/app-icon.png",
     "scheme": "aifashionpreview10",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -26,16 +26,26 @@
       "output": "static",
       "favicon": "./assets/images/favicon.png"
     },
-    "splash": {
-      "backgroundColor": "#ffffff"
-    },
     "plugins": [
       "expo-router",
-      "expo-splash-screen"
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/images/app-icon.png",
+          "backgroundColor": "#ffffff",
+          "imageWidth": 200
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "195707e0-5895-438e-9453-bb1893b23535"
+      }
     }
   }
 }
