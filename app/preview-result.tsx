@@ -1,17 +1,21 @@
 import { supabase } from '@/src/lib/supabase';
+import * as FileSystem from 'expo-file-system/legacy';
+import * as MediaLibrary from 'expo-media-library';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { Check, X } from 'lucide-react-native';
+import { Check, ChevronLeft, X } from 'lucide-react-native';
 import React, { useState } from 'react';
-import { ActivityIndicator, Alert, Image, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { ActivityIndicator, Alert, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Button } from '../src/components/Button';
 import { Card } from '../src/components/Card';
 import { colors } from '../src/theme/colors';
 import { spacing } from '../src/theme/spacing';
 import { typography } from '../src/theme/typography';
 
+
 export default function PreviewResultScreen() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const { result_image_url, customerName, customerEmail, jobId, viewOnly } = useLocalSearchParams<{
     result_image_url: string;
     customerName: string;
@@ -21,12 +25,45 @@ export default function PreviewResultScreen() {
   }>();
 
   const isViewOnly = viewOnly === "true";
+  const [isDownloading, setIsDownloading] = useState(false);
   const [isRejecting, setIsRejecting] = useState(false);
 
   const handleAccept = () => {
     // The job is already saved as "succeeded" in tryon_jobs from generation —
     // accepting just confirms and takes the user to their history log.
     router.replace('/(tabs)/history');
+  };
+
+  const handleDownload = async () => {
+    if (!result_image_url) return;
+
+    try {
+      setIsDownloading(true);
+
+      const { status } = await MediaLibrary.requestPermissionsAsync();
+      if (status !== 'granted') {
+        Alert.alert(
+          'Permission Required',
+          'Please allow photo library access to save images.'
+        );
+        return;
+      }
+
+      const fileName = `ai-fashion-preview-${Date.now()}.png`;
+      const localUri = `${FileSystem.cacheDirectory}${fileName}`;
+
+      const downloadResult = await FileSystem.downloadAsync(result_image_url, localUri);
+
+      const asset = await MediaLibrary.createAssetAsync(downloadResult.uri);
+      await MediaLibrary.createAlbumAsync('AI Fashion Preview', asset, false);
+
+      Alert.alert('Saved', 'Image saved to your gallery.');
+    } catch (error: any) {
+      console.error('Download error:', error);
+      Alert.alert('Download Failed', error.message || 'Could not save the image.');
+    } finally {
+      setIsDownloading(false);
+    }
   };
 
   const handleReject = () => {
@@ -69,12 +106,21 @@ export default function PreviewResultScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView contentContainerStyle={styles.scrollContent}>
-        <View style={styles.header}>
-          <Text style={styles.title}>
-            {isViewOnly ? "Generated Preview" : "Generation Complete"}
-          </Text>
+      {isViewOnly && (
+        <View style={[styles.customHeader, { paddingTop: insets.top - spacing.md }]}>
+          <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+            <ChevronLeft size={26} color={colors.onSurface} />
+          </TouchableOpacity>
+          <Text style={styles.customHeaderTitle}>Generated Preview</Text>
         </View>
+      )}
+
+      <ScrollView contentContainerStyle={styles.scrollContent}>
+        {!isViewOnly && (
+          <View style={styles.header}>
+            <Text style={styles.title}>Generation Complete</Text>
+          </View>
+        )}
 
         <Card style={styles.imageCard}>
           {result_image_url ? (
@@ -128,13 +174,16 @@ export default function PreviewResultScreen() {
         )}
 
         <View style={styles.actions}>
-          {isViewOnly ? (
-            <Button
-              title="Back to History"
-              onPress={() => router.back()}
-              style={styles.actionBtn}
-            />
-          ) : (
+          <Button
+            title={isDownloading ? "Downloading..." : "Download Image"}
+            icon={<Check color={colors.onPrimary} size={20} />}
+            variant="secondary"
+            onPress={handleDownload}
+            style={styles.actionBtn}
+            disabled={isDownloading}
+          />
+
+          {!isViewOnly && (
             <>
               <Button
                 title="Accept & Save"
@@ -171,6 +220,22 @@ const styles = StyleSheet.create({
     borderColor: colors.outlineVariant,
     marginBottom: spacing.xl,
     gap: spacing.sm,
+  },
+  customHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: spacing.md,
+    paddingBottom: spacing.md,
+    backgroundColor: colors.surfaceContainerLow,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.outlineVariant,
+  },
+  backButton: {
+    paddingRight: spacing.md,
+  },
+  customHeaderTitle: {
+    ...typography.titleMd,
+    color: colors.onSurface,
   },
   customerInfoRow: {
     flexDirection: 'row',

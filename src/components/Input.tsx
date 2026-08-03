@@ -1,10 +1,9 @@
-import React, { useState, useRef } from 'react';
-import { View, TextInput, Text, StyleSheet, TextInputProps, ViewStyle, Pressable } from 'react-native';
-import * as Haptics from 'expo-haptics';
+import React, { useRef, useState } from 'react';
+import { Pressable, StyleSheet, Text, TextInput, TextInputProps, View, ViewStyle } from 'react-native';
 
 import { Colors } from '../theme/colors';
+import { rounded, spacing } from '../theme/spacing';
 import { useTheme } from '../theme/ThemeContext';
-import { spacing, rounded } from '../theme/spacing';
 import { typography } from '../theme/typography';
 
 interface InputProps extends TextInputProps {
@@ -26,8 +25,6 @@ export const Input: React.FC<InputProps> = ({ label, error, containerStyle, pref
   };
 
   const handleChangeText = (text: string) => {
-    // Vibrate when adding new characters
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     if (onChangeText) {
       onChangeText(text);
     }
@@ -43,8 +40,11 @@ export const Input: React.FC<InputProps> = ({ label, error, containerStyle, pref
         style={[
           styles.inputContainer,
           {
-            borderColor: error ? colors.error : isFocused ? colors.primary : 'transparent',
-            borderWidth: error || isFocused ? 2 : 0,
+            borderColor: error
+              ? colors.error
+              : isFocused
+                ? colors.primary
+                : 'transparent',
           },
         ]}
       >
@@ -53,6 +53,8 @@ export const Input: React.FC<InputProps> = ({ label, error, containerStyle, pref
           ref={inputRef}
           style={styles.input}
           placeholderTextColor={colors.outline}
+          autoCorrect={false}
+          spellCheck={false}
           onChangeText={handleChangeText}
           onFocus={(e) => {
             setIsFocused(true);
@@ -80,12 +82,15 @@ const createStyles = (colors: Colors) => StyleSheet.create({
     marginBottom: spacing.xs,
   },
   inputContainer: {
-    backgroundColor: colors.surfaceVariant, // Using theme color instead of hardcoded hex
-    borderRadius: rounded.DEFAULT, // 8px
+    backgroundColor: colors.surfaceVariant,
+    borderRadius: rounded.DEFAULT,
     minHeight: 48,
     paddingHorizontal: spacing.md,
     flexDirection: 'row',
     alignItems: 'center',
+
+    borderWidth: 2,
+    borderColor: 'transparent',
   },
   prefixContainer: {
     marginRight: spacing.sm,
@@ -98,6 +103,8 @@ const createStyles = (colors: Colors) => StyleSheet.create({
     color: colors.onSurface,
     flex: 1,
     paddingVertical: spacing.sm,
+    includeFontPadding: false,
+    textAlignVertical: 'center',
   },
   errorText: {
     ...typography.labelSm,

@@ -1,7 +1,7 @@
 import { useAuth } from '@/src/lib/auth-context';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import { useRouter } from 'expo-router';
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { colors } from '../src/theme/colors';
@@ -10,18 +10,24 @@ import { typography } from '../src/theme/typography';
 export default function SplashScreen() {
   const router = useRouter();
   const { user, loading } = useAuth();
+  const hasNavigated = useRef(false);
 
   useEffect(() => {
+    if (hasNavigated.current) return; // never act again once we've made our one decision
+    if (loading) return; // wait for auth to resolve before deciding
+
+    hasNavigated.current = true;
+
     const t = setTimeout(() => {
-      if (!loading && user) {
+      if (user) {
         router.replace('/(tabs)');
-      } else if (!loading) {
+      } else {
         router.replace('/login');
       }
     }, 1500);
 
     return () => clearTimeout(t);
-  }, [loading, router, user]);
+  }, [loading, user, router]);
 
   return (
     <SafeAreaView style={styles.container}>

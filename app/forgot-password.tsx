@@ -35,12 +35,15 @@ export default function ForgotPasswordScreen() {
       if (error) {
         console.log("OTP Error message:", error.message);
         console.log("OTP Error status:", error.status);
-        Alert.alert('Send Failed', error.message);
-
+        Alert.alert(
+          'Check your email',
+          'If an account exists with this email, a verification code has been sent.'
+        );
+        router.replace(`/verify-code?email=${encodeURIComponent(email)}`);
         return;
       }
 
-      Alert.alert('Success', 'A reset password link has been sent to your email.');
+      Alert.alert('Success', 'A reset password 8-digit OTP has been sent to your email.');
       // pass email to verify screen so it can verify the code
       router.replace(`/verify-code?email=${encodeURIComponent(email)}`);
     } catch (error) {

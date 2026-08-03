@@ -80,12 +80,12 @@ export default function HomeDashboard() {
     }
     if (!skipCustomerInfo) {
       if (!customerName.trim()) {
-        Alert.alert("Missing Customer Info", "Please enter the customer's name, or enable Skip.");
+        Alert.alert("Missing Customer Info", "Please enter the customer's details, or enable Skip.");
         return;
       }
 
       if (!customerEmail.trim()) {
-        Alert.alert("Missing Customer Info", "Please enter the customer's email, or enable Skip.");
+        Alert.alert("Missing Customer Info", "Please enter the customer's details, or enable Skip.");
         return;
       }
 

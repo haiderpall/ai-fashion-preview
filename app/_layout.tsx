@@ -22,7 +22,7 @@ import { ThemeProvider as AppThemeProvider } from '@/src/theme/ThemeContext';
 SplashScreen.preventAutoHideAsync();
 
 export const unstable_settings = {
-  anchor: 'index',
+  anchor: 'splash',
 };
 
 export default function RootLayout() {

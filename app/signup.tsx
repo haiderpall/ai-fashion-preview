@@ -56,7 +56,7 @@ export default function SignUpScreen() {
         return;
       }
 
-      router.replace('/?newUser=true');
+      router.replace('/(tabs)');
     } catch (error) {
       Alert.alert('Error', 'Something went wrong. Please try again.');
     } finally {
@@ -79,21 +79,21 @@ export default function SignUpScreen() {
           <View style={styles.form}>
             <Input
               label="Shop Name"
-              placeholder="e.g. Chughtai Son's Fabric & Tailor" style={{ height: 40 }}
+              placeholder="e.g. Chughtai Son's Fabric"
               value={shopname}
               onChangeText={setShopname}
               prefix={<Store size={20} color={colors.onSurfaceVariant} />}
             />
             <Input
               label="Owner Name"
-              placeholder="Full Name" style={{ height: 40 }}
+              placeholder="Full Name"
               value={name}
               onChangeText={setName}
               prefix={<User size={20} color={colors.onSurfaceVariant} />}
             />
             <Input
               label="Email Address"
-              placeholder="Enter your email" style={{ height: 40 }}
+              placeholder="Enter your email"
               keyboardType="email-address"
               autoCapitalize="none"
               value={email}

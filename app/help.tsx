@@ -30,6 +30,14 @@ export default function HelpCenterScreen() {
     {
       question: "How do I switch to Dark Mode?",
       answer: "Go to the 'Settings' tab. Under the 'Appearance' section, you will find a toggle switch for Dark Mode. Tapping it will instantly switch the app's theme between light and dark modes."
+    },
+    {
+      question: "How do I switch to Dark Mode?",
+      answer: "Go to the 'Settings' tab. Under the 'Appearance' section, you will find a toggle switch for Dark Mode. Tapping it will instantly switch the app's theme between light and dark modes."
+    },
+    {
+      question: "How do I delete my account?",
+      answer: "Go to the 'Settings' tab. Under the 'Account' section, you will find a 'Delete Account' button. Tapping it will permanently delete your account and all your generated images, uploads, and history."
     }
   ];
 
