@@ -221,7 +221,7 @@ export default function SettingsScreen() {
             <View style={styles.settingInfo}>
               <View style={styles.iconWrapper}>
                 <HelpCircle
-                  size={20}
+                  size={16}
                   color={colors.onSurface}
                 />
               </View>

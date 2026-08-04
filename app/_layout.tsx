@@ -15,9 +15,9 @@ import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
 import 'react-native-reanimated';
 
-import { useColorScheme } from '@/hooks/use-color-scheme';
 import { AuthProvider } from '@/src/lib/auth-context';
-import { ThemeProvider as AppThemeProvider } from '@/src/theme/ThemeContext';
+import { ThemeProvider as AppThemeProvider, useTheme } from '@/src/theme/ThemeContext';
+import * as SystemUI from 'expo-system-ui';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -25,9 +25,31 @@ export const unstable_settings = {
   anchor: 'splash',
 };
 
-export default function RootLayout() {
-  const colorScheme = useColorScheme();
+function RootNavigation() {
+  const { isDark, colors } = useTheme();
 
+  useEffect(() => {
+    // Set root background color for system navigation bar matching
+    SystemUI.setBackgroundColorAsync(colors.surface);
+  }, [colors.surface]);
+
+  return (
+    <ThemeProvider value={isDark ? DarkTheme : DefaultTheme}>
+      <Stack initialRouteName="splash" screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.surfaceContainerLow } }}>
+        <Stack.Screen name="splash" />
+        <Stack.Screen name="index" />
+        <Stack.Screen name="login" />
+        <Stack.Screen name="signup" />
+        <Stack.Screen name="(tabs)" />
+        <Stack.Screen name="ai-processing" options={{ presentation: 'fullScreenModal' }} />
+        <Stack.Screen name="preview-result" />
+      </Stack>
+      <StatusBar style={isDark ? 'light' : 'dark'} backgroundColor="transparent" />
+    </ThemeProvider>
+  );
+}
+
+export default function RootLayout() {
   const [loaded, error] = useFonts({
     Manrope_400Regular,
     Manrope_600SemiBold,
@@ -49,19 +71,7 @@ export default function RootLayout() {
   return (
     <AuthProvider>
       <AppThemeProvider>
-        <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-          <Stack initialRouteName="splash" screenOptions={{ headerShown: false }}>
-            <Stack.Screen name="splash" />
-            <Stack.Screen name="index" />
-            <Stack.Screen name="login" />
-            <Stack.Screen name="signup" />
-            <Stack.Screen name="(tabs)" />
-            <Stack.Screen name="settings" options={{ presentation: 'modal' }} />
-            <Stack.Screen name="ai-processing" options={{ presentation: 'fullScreenModal' }} />
-            <Stack.Screen name="preview-result" />
-          </Stack>
-          <StatusBar style="auto" />
-        </ThemeProvider>
+        <RootNavigation />
       </AppThemeProvider>
     </AuthProvider>
   );

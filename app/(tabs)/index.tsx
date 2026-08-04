@@ -454,7 +454,7 @@ const createStyles = (colors: Colors) => StyleSheet.create({
   },
   whiteButton: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.surface,
     borderWidth: 1,
     borderColor: colors.outlineVariant,
   },

@@ -1,5 +1,6 @@
 import { useAuth } from '@/src/lib/auth-context';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
 import React, { useEffect, useRef } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
@@ -18,12 +19,31 @@ export default function SplashScreen() {
 
     hasNavigated.current = true;
 
-    const t = setTimeout(() => {
-      if (user) {
-        router.replace('/(tabs)');
-      } else {
-        router.replace('/login');
+    const checkLaunchStatus = async () => {
+      try {
+        const hasLaunched = await AsyncStorage.getItem('hasLaunched');
+        if (hasLaunched === null) {
+          await AsyncStorage.setItem('hasLaunched', 'true'); //verfied that its first start than route accordingly
+          router.replace('/signup');
+        } else {
+          if (user) {
+            router.replace('/(tabs)');
+          } else {
+            router.replace('/login');
+          }
+        }
+      } catch (error) {
+        console.error('Error checking launch status:', error);
+        if (user) {
+          router.replace('/(tabs)');
+        } else {
+          router.replace('/login');
+        }
       }
+    };
+
+    const t = setTimeout(() => {
+      checkLaunchStatus();
     }, 1500);
 
     return () => clearTimeout(t);

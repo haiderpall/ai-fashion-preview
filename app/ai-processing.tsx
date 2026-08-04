@@ -6,8 +6,9 @@ import { Animated, Easing, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Svg, { Circle } from 'react-native-svg';
 import { Gender, getPromptForGarment } from '../constants/promptTemplate';
-import { colors } from '../src/theme/colors';
+import { Colors } from '../src/theme/colors';
 import { spacing } from '../src/theme/spacing';
+import { useTheme } from '../src/theme/ThemeContext';
 import { typography } from '../src/theme/typography';
 
 const PROGRESS_COLOR = "#6E01EF";
@@ -33,6 +34,8 @@ const STATUS_MESSAGES = [
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 
 export default function AIProcessingScreen() {
+  const { colors } = useTheme();
+  const styles = React.useMemo(() => createStyles(colors), [colors]);
   const router = useRouter();
   const { personUri, garmentUri, category, gender, customerName, customerEmail } = useLocalSearchParams<{
     personUri: string;
@@ -211,7 +214,7 @@ export default function AIProcessingScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: Colors) => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.surface,

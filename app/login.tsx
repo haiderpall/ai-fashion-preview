@@ -98,7 +98,7 @@ export default function LoginScreen() {
 
 
             <Button
-              title={isSigningIn ? 'Signning In...' : 'Sign In'}
+              title={isSigningIn ? 'Signing In...' : 'Login'}
               onPress={handleLogin}
               disabled={isSigningIn}
               style={styles.signInButton}

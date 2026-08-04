@@ -8,12 +8,15 @@ import { ActivityIndicator, Alert, Image, ScrollView, StyleSheet, Text, Touchabl
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Button } from '../src/components/Button';
 import { Card } from '../src/components/Card';
-import { colors } from '../src/theme/colors';
+import { Colors } from '../src/theme/colors';
 import { spacing } from '../src/theme/spacing';
+import { useTheme } from '../src/theme/ThemeContext';
 import { typography } from '../src/theme/typography';
 
 
 export default function PreviewResultScreen() {
+  const { colors } = useTheme();
+  const styles = React.useMemo(() => createStyles(colors), [colors]);
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const { result_image_url, customerName, customerEmail, jobId, viewOnly } = useLocalSearchParams<{
@@ -211,7 +214,7 @@ export default function PreviewResultScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: Colors) => StyleSheet.create({
   customerInfoContainer: {
     backgroundColor: colors.surface,
     padding: spacing.lg,
