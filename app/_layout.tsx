@@ -22,7 +22,7 @@ import * as SystemUI from 'expo-system-ui';
 SplashScreen.preventAutoHideAsync();
 
 export const unstable_settings = {
-  anchor: 'splash',
+  anchor: 'index',
 };
 
 function RootNavigation() {
@@ -35,8 +35,7 @@ function RootNavigation() {
 
   return (
     <ThemeProvider value={isDark ? DarkTheme : DefaultTheme}>
-      <Stack initialRouteName="splash" screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.surfaceContainerLow } }}>
-        <Stack.Screen name="splash" />
+      <Stack initialRouteName="index" screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.surfaceContainerLow } }}>
         <Stack.Screen name="index" />
         <Stack.Screen name="login" />
         <Stack.Screen name="signup" />

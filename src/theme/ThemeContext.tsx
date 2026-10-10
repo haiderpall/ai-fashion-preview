@@ -1,7 +1,8 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { useColorScheme } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { lightColors, darkColors, Colors } from './colors';
+import * as NavigationBar from "expo-navigation-bar";
+import React, { createContext, useContext, useEffect, useState } from 'react';
+import { Platform, useColorScheme } from 'react-native';
+import { Colors, darkColors, lightColors } from './colors';
 
 type ThemeContextType = {
   isDark: boolean;
@@ -13,13 +14,28 @@ type ThemeContextType = {
 const ThemeContext = createContext<ThemeContextType>({
   isDark: false,
   colors: lightColors,
-  toggleTheme: () => {},
-  setTheme: () => {},
+  toggleTheme: () => { },
+  setTheme: () => { },
 });
 
 export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
   const systemColorScheme = useColorScheme();
   const [isDark, setIsDark] = useState(systemColorScheme === 'dark');
+  useEffect(() => {
+    if (Platform.OS !== 'android') return;
+
+    const applyNavBarTheme = async () => {
+      try {
+        //  await NavigationBar.setBackgroundColorAsync(isDark ? darkColors.surface : lightColors.surface);
+        await NavigationBar.setButtonStyleAsync(isDark ? 'light' : 'dark');
+      } catch (error) {
+        console.warn('Failed to set navigation bar theme:', error);
+      }
+    };
+
+    applyNavBarTheme();
+  }, [isDark]);
+
   const [isReady, setIsReady] = useState(false);
 
   // Load saved theme on mount
